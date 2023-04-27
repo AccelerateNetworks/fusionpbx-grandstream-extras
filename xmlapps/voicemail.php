@@ -50,9 +50,8 @@ function app_render() {
         unset($parameters);
         $out->startElement('section');
         if(sizeof($messages) == 0) {
-            $out->startElement('command');
+            $out->startElement('text');
             $out->writeAttribute('label', 'no voicemails');
-            $out->writeAttribute('action', $baseURL);
             $out->endElement(); // </command>
         }
         foreach($messages as $message) {
