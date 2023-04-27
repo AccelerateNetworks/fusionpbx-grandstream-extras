@@ -26,8 +26,13 @@ function upsert_device_setting($device_uuid, $setting, $value) {
     unset($parameters);
 }
 
-function ensure_device_xmlapp($device_uuid, $token, $app, $appname) {
-    $xmlAppUrl = "https://".$_SERVER['HTTP_HOST']."/app/grandstream_extras/xmlapp.php?token=".$token."&app=".$app;
-    upsert_device_setting($device_uuid, 'grandstream_xmlapp_url', $xmlAppUrl);
-    upsert_device_setting($device_uuid, 'grandstream_xmlapp_name', $appname);    
+function clear_device_setting($device_uuid, $setting) {
+    global $domain_uuid;
+    $database = new database;
+    $sql = "DELETE FROM v_device_settings WHERE device_uuid = :device_uuid AND domain_uuid = :domain_uuid AND device_setting_subcategory = :setting";
+    $parameters['device_uuid'] = $_POST['device_uuid'];
+    $parameters['domain_uuid'] = $domain_uuid;
+    $parameters['setting'] = $setting;
+    $database->execute($sql, $parameters);
+    unset($parameters);
 }

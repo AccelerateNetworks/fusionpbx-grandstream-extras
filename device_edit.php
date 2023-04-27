@@ -36,7 +36,8 @@ if($_POST['device_uuid']) { // edit an existing device
     $app = $_POST['xmlapp'];
 
     if($app == "disabled") {
-        // TODO: ensure device setting options are not set
+        clear_device_setting($device_uuid, 'grandstream_xmlapp_url');
+        clear_device_setting($device_uuid, 'grandstream_xmlapp_name');
     } else {
         $file = __DIR__."/xmlapps/".$app.".php";
         if(file_exists($file)) {
