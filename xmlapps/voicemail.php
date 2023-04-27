@@ -49,6 +49,12 @@ function app_render() {
         $messages = $database->select($sql, $parameters, 'all');
         unset($parameters);
         $out->startElement('section');
+        if(sizeof($messages) == 0) {
+            $out->startElement('command');
+            $out->writeAttribute('label', 'no voicemails');
+            $out->writeAttribute('action', $baseURL);
+            $out->endElement(); // </command>
+        }
         foreach($messages as $message) {
             $out->startElement('command');
             $out->writeAttribute('label', $message['caller_id_name']);
