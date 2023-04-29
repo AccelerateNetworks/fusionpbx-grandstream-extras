@@ -19,14 +19,14 @@ if(!$device) {
 }
 
 $device_uuid = $device['device_uuid'];
+require __DIR__."/xmlapps/index.php";
 
-$app = strtolower($_GET['app']);
-$file = __DIR__."/xmlapps/".$app.".php";
-if(!file_exists($file)) {
-    send_disabled();
-    die();
+if($_GET['app']) {
+    $app = $_GET['app'];
+    if(!array_key_exists($app, $xmlapps)) {
+        $app = "disabled";
+    }
+    require __DIR__."/xmlapps/".$app.".php";
+} else {
+    output_launcher_app();
 }
-
-require $file;
-
-app_render();

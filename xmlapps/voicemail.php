@@ -1,19 +1,5 @@
 <?php
 
-$baseURL = "https://".$_SERVER['HTTP_HOST'].$_SERVER['DOCUMENT_URI']."?app=voicemail&token=".$_GET['token'];
-
-function app_name() {
-    return "Voicemail";
-}
-
-function app_render() {
-    if($_GET['voicemail_uuid']) {
-        render_message($_GET['token'], $_GET['voicemail_uuid']);
-    } else {
-        render_list($_GET['token']);
-    }
-}
-
 function render_list($token) {
     global $baseURL;
 
@@ -35,7 +21,7 @@ function render_list($token) {
         $out->startElement('command');
         $out->writeAttribute('label', $message['caller_id_name']);
         $out->writeAttribute('text', $message['created_epoch']);
-        $out->writeAttribute('action', $baseURL.'&voicemail_uuid='.$message['voicemail_message_uuid']);
+        $out->writeAttribute('action', $baseURL.'&app=voicemail&voicemail_uuid='.$message['voicemail_message_uuid']);
         $out->endElement(); // </command>
     }
 
@@ -108,7 +94,7 @@ function render_message(string $token, string $messageID) {
 
     $out->startElement('Softkey');
     $out->writeAttribute('action', 'UseURL');
-    $out->writeAttribute('commandArgs', $baseURL);
+    $out->writeAttribute('commandArgs', $baseURL."&app=voicemail");
     $out->writeAttribute('label', 'Back');
     $out->endElement(); // </softkey>
 
@@ -127,7 +113,7 @@ function render_message(string $token, string $messageID) {
     if($message['message_status'] != "saved") {
         $out->startElement('SoftKey');
         $out->writeAttribute('action', 'UseURL');
-        $out->writeAttribute('commandArgs', $baseURL."&voicemail_uuid=".$messageID."&action=read");
+        $out->writeAttribute('commandArgs', $baseURL."&app=voicemail&voicemail_uuid=".$messageID."&action=read");
         $out->writeAttribute('label', 'Mark Read');
         $out->endElement(); // </softkey>
     }
@@ -137,4 +123,10 @@ function render_message(string $token, string $messageID) {
     $out->endElement(); // </xmlapp>
 
     echo $out->outputMemory();
+}
+
+if($_GET['voicemail_uuid']) {
+    render_message($_GET['token'], $_GET['voicemail_uuid']);
+} else {
+    render_list($_GET['token']);
 }

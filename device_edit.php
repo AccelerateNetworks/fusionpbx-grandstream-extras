@@ -16,6 +16,8 @@ if(!if_group('superadmin')) {
 	die();	
 }
 
+require __DIR__."/xmlapps/index.php";
+
 if($_POST['device_uuid']) { // edit an existing device
     $sql = "UPDATE grandstream_devices SET xmlapp = :xmlapp, model = :model, firmware_version = :firmware_version WHERE device_uuid = :device_uuid AND domain_uuid = :domain_uuid RETURNING token";
     $parameters['xmlapp'] = $_POST['xmlapp'];
@@ -39,11 +41,10 @@ if($_POST['device_uuid']) { // edit an existing device
         clear_device_setting($device_uuid, 'grandstream_xmlapp_url');
         clear_device_setting($device_uuid, 'grandstream_xmlapp_name');
     } else {
-        $file = __DIR__."/xmlapps/".$app.".php";
-        if(file_exists($file)) {
+        if($xmlapps[$app]) {
             require $file;
             upsert_device_setting($device_uuid, 'grandstream_xmlapp_url',  "https://".$_SERVER['HTTP_HOST']."/app/grandstream_extras/xmlapp.php?token=".$token."&app=".$app);
-            upsert_device_setting($device_uuid, 'grandstream_xmlapp_name', app_name());
+            upsert_device_setting($device_uuid, 'grandstream_xmlapp_name', $xmlapps[$app]['title']);
         }
     }
 
@@ -82,18 +83,13 @@ echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
         <td width="30%" class="vncellreq" valign="top" align="left" nowrap="nowrap">XML App</td>
         <td width="70%" class="vtable" align="left">
             <select name="xmlapp">
-                <?php 
-                foreach(scandir(__DIR__."/xmlapps/") as $filename) {
-                    if(substr($filename, -4) != ".php") {
-                        continue;
-                    }
-                    $app = substr($filename, 0, -4);
-                    
+                <?php
+                foreach($xmlapps as $slug => $app) {
                     $selected = "";
-                    if($device['xmlapp'] == $app || (!$device['xmlapp'] && $app == "disabled")) {
+                    if($device['xmlapp'] == $slug || (!$device['xmlapp'] && $slug == "disabled")) {
                         $selected = "selected";
                     }
-                    echo "<option value='".$app."' ".$selected.">".$app."</option>";
+                    echo "<option value='".$app."' ".$selected.">".$app['title']."</option>";
                 }
                 ?>
             </select>
