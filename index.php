@@ -18,7 +18,7 @@ if(!if_group('superadmin')) {
 echo "<div class='action_bar' id='action_bar'>\n";
 echo "	<div class='heading'><b>Grandstream Devices</b></div>\n";
 echo "	<div class='actions'>\n";
-echo button::create(['type'=>'button','label'=>"New",'icon'=>$_SESSION['theme']['button_icon_add'],'id'=>'btn_add','name'=>'btn_add','link'=>'device_edit.php']);
+echo button::create(['type'=>'button','label'=>"New",'icon'=>$_SESSION['theme']['button_icon_add'],'id'=>'btn_add','name'=>'btn_add','link'=>'device_add.php']);
 echo button::create(['type'=>'button','label'=>"Import",'icon'=>'arrow-down','id'=>'btn_add','name'=>'btn_add','link'=>'import.php']);
 echo "	</div>\n";
 echo "	<div style='clear: both;'></div>\n";

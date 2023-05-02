@@ -8,7 +8,8 @@ require_once "resources/require.php";
 require_once "resources/check_auth.php";
 require_once "resources/header.php";
 require_once "resources/paging.php";
-require_once("lib/v_devices.php");
+require_once "lib/v_devices.php";
+require_once "lib/gdms.php";
 
 if(!if_group('superadmin')) {
 	echo "permission denied";
